@@ -1,0 +1,12 @@
+# 🚫 ห้ามอัปโหลดไฟล์ Environment Variables และ API Keys
+.env
+*.json
+
+# 🚫 ห้ามอัปโหลดไฟล์ที่เกี่ยวข้องกับ Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🚫 ห้ามอัปโหลดไฟล์ที่เกี่ยวข้องกับ Editor
+.vscode/
