@@ -1,13 +1,8 @@
 import firebase_admin
 from firebase_admin import credentials, firestore, storage
 import google.generativeai as genai
-
 import os
 from dotenv import load_dotenv
-# ตรวจสอบว่า dotenv ถูกโหลดแล้วหรือไม่
-if not os.environ.get("DOTENV_LOADED"):
-    load_dotenv()
-    os.environ["DOTENV_LOADED"] = "1"
 
 from PIL import Image
 import streamlit as st
@@ -39,7 +34,6 @@ print("Firestore Database Connected:", db)
 
 
 # ตั้งค่า Gemini API
-genai.configure(api_key=GENAI_API_KEY)
 genai.configure(api_key=GENAI_API_KEY)
 
 def upload_image_to_firebase(image_path):
