@@ -10,8 +10,8 @@ import streamlit as st
 load_dotenv()
 
 # ใช้ Environment Variables แทนค่าคงที่
-FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS")
-GENAI_API_KEY = os.getenv("GENAI_API_KEY")
+FIREBASE_CREDENTIALS = os.environ.get("FIREBASE_CREDENTIALS")
+GENAI_API_KEY = os.environ.get("GENAI_API_KEY")
 
 # เชื่อม Firebase
 cred = credentials.Certificate(FIREBASE_CREDENTIALS)
