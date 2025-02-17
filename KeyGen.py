@@ -6,7 +6,7 @@ from PIL import Image
 
 # โหลดค่า Environment Variables จาก Streamlit Secrets
 FIREBASE_CREDENTIALS = st.secrets["FIREBASE_CREDENTIALS"]
-GENAI_API_KEY = st.secrets["GENAI_API_KEY"]
+GENAI_API_KEY = st.secrets["GENAI"]["api_key"]
 
 # ตรวจสอบค่า Environment Variables
 if not FIREBASE_CREDENTIALS:
@@ -17,9 +17,7 @@ if not GENAI_API_KEY:
 
 # เชื่อมต่อ Firebase
 cred = credentials.Certificate(FIREBASE_CREDENTIALS)
-initialize_app(cred, {
-    'storageBucket': 'keygen-60990.appspot.com'
-})
+firebase_app = firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 bucket = storage.bucket()
@@ -27,7 +25,7 @@ bucket = storage.bucket()
 st.write("Firestore Database Connected")
 
 # ตั้งค่า Gemini AI API
-genai.configure(api_key=GENAI_API_KEY)
+genai.configure(api_key=GENAI_api_key)
 
 
 def upload_image_to_firebase(image_path):
