@@ -1,39 +1,32 @@
 import firebase_admin
-from firebase_admin import credentials, firestore, storage
+from firebase_admin import credentials, firestore, storage, initialize_app
 import google.generativeai as genai
-
-import os
-from dotenv import load_dotenv
-
-from PIL import Image
 import streamlit as st
+from PIL import Image
 
-# โหลดค่า Environment Variables
-load_dotenv()
-
-# ใช้ Environment Variables แทนค่าคงที่
-FIREBASE_CREDENTIALS = os.environ.get("FIREBASE_CREDENTIALS")
-GENAI_API_KEY = os.environ.get("GENAI_API_KEY")
+# โหลดค่า Environment Variables จาก Streamlit Secrets
+FIREBASE_CREDENTIALS = st.secrets["FIREBASE_CREDENTIALS"]
+GENAI_API_KEY = st.secrets["GENAI_API_KEY"]
 
 # ตรวจสอบค่า Environment Variables
 if not FIREBASE_CREDENTIALS:
-    raise ValueError("FIREBASE_CREDENTIALS environment variable is not set.")
-if not GENAI_API_KEY:
-    raise ValueError("GENAI_API_KEY environment variable is not set.")
+    raise ValueError("FIREBASE_CREDENTIALS is not set in Streamlit secrets.")
 
-# เชื่อม Firebase
+if not GENAI_API_KEY:
+    raise ValueError("GENAI_API_KEY is not set in Streamlit secrets.")
+
+# เชื่อมต่อ Firebase
 cred = credentials.Certificate(FIREBASE_CREDENTIALS)
-firebase_admin.initialize_app(cred, {
+initialize_app(cred, {
     'storageBucket': 'keygen-60990.appspot.com'
 })
 
 db = firestore.client()
 bucket = storage.bucket()
 
-print("Firestore Database Connected:", db)
+st.write("Firestore Database Connected")
 
-
-# ตั้งค่า Gemini API
+# ตั้งค่า Gemini AI API
 genai.configure(api_key=GENAI_API_KEY)
 
 
