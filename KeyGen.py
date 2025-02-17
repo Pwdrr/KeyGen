@@ -6,7 +6,7 @@ from PIL import Image
 
 # โหลดค่า Environment Variables จาก Streamlit Secrets
 FIREBASE_CREDENTIALS = st.secrets["FIREBASE_CREDENTIALS"]
-GENAI_API_KEY = st.secrets["GENAI_API_KEY"]
+GENAI_API_KEY = st.secrets["GEM_KEY"]
 
 # ตรวจสอบค่า Environment Variables
 if not FIREBASE_CREDENTIALS:
