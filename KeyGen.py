@@ -42,7 +42,7 @@ def generate_keywords_from_image(image_path):
 uploaded_file = st.file_uploader("📤 อัปโหลดรูปภาพที่ต้องการวิเคราะห์", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
-    #keywords = generate_keywords_from_image(uploaded_file)  # ส่ง BytesIO ไป
+    keywords = generate_keywords_from_image(uploaded_file)  # ส่ง BytesIO ไป
     st.write("Generated Keywords:", keywords)
 
     # ปุ่มวิเคราะห์
