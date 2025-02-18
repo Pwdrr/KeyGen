@@ -24,11 +24,11 @@ def generate_keywords_from_image(image_path):
     """ใช้ Gemini วิเคราะห์ภาพและสร้างคีย์เวิร์ด"""
     model = genai.GenerativeModel("gemini-pro-vision")
 
-    if not os.path.exists(image_path):
-        raise FileNotFoundError(f"File not found: {image_path}")
-    
-    image = Image.open(image_path)
-    image.verify()
+    if image_file is None:
+        raise ValueError("No image file provided.")
+
+    # แปลง uploaded file (BytesIO) เป็นภาพ
+    image = Image.open(image_file)
 
     response = model.generate_content(
         ["Can you suggest some keywords to search for similar images for design reference?"],
@@ -42,9 +42,8 @@ def generate_keywords_from_image(image_path):
 uploaded_file = st.file_uploader("📤 อัปโหลดรูปภาพที่ต้องการวิเคราะห์", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
-    # แสดงรูปภาพ
-    image = Image.open(uploaded_file)
-    st.image(image, caption="📸 รูปที่อัปโหลด", use_column_width=True)
+    #keywords = generate_keywords_from_image(uploaded_file)  # ส่ง BytesIO ไป
+    st.write("Generated Keywords:", keywords)
 
     # ปุ่มวิเคราะห์
     if st.button("🔍 สร้างคีย์เวิร์ด"):
