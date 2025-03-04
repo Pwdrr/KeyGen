@@ -2,6 +2,7 @@ import google.generativeai as genai
 import streamlit as st
 from PIL import Image
 import io
+from google.generativeai.types import Part
 
 # ตั้งค่าหน้า UI
 st.set_page_config(page_title="AI Image Keyword Generator", layout="centered")
@@ -30,24 +31,36 @@ def generate_keywords_from_image(image_file):
     # แปลง uploaded file (BytesIO) เป็นภาพ
     image = Image.open(image_file)
 
-    # ส่งรูปไปที่ Gemini โดยใส่เป็น list
+    # แปลงเป็น Part เพื่อส่งเข้า Gemini
+    image_part = Part.from_image(image)
+
     response = model.generate_content(
         ["Can you suggest some keywords to search for similar images for design reference?"],
-        [image]  # ✅ ส่งเป็น list
+        image_part  # ✅ ส่งเป็น Part object
     )
 
-    keywords = response.text.strip().split(", ")
+    # ตรวจสอบว่ามี response.text หรือไม่
+    if response and response.text:
+        keywords = response.text.strip().split(", ")
+    else:
+        keywords = ["No keywords generated."]
+
     return keywords
     
 # อัปโหลดไฟล์รูปภาพ
 uploaded_file = st.file_uploader("📤 อัปโหลดรูปภาพที่ต้องการวิเคราะห์", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
+
+    # แสดงภาพที่อัปโหลด
+    image = Image.open(uploaded_file)
+    st.image(image, caption="📸 รูปที่อัปโหลด", use_column_width=True)
+
+    
     # ปุ่มวิเคราะห์
     if st.button("🔍 สร้างคีย์เวิร์ด"):
         with st.spinner("AI กำลังวิเคราะห์... ⏳"):
             keywords = generate_keywords_from_image(uploaded_file)
 
-        # แสดงคีย์เวิร์ด
         st.subheader("🔑 คีย์เวิร์ดที่ได้:")
         st.write(", ".join(keywords))
