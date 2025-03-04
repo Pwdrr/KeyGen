@@ -20,35 +20,33 @@ if not GENAI_API_KEY:
 # ตั้งค่า Gemini AI API
 genai.configure(api_key=GENAI_API_KEY)
 
-def generate_keywords_from_image(image_path):
+def generate_keywords_from_image(image_file):
     """ใช้ Gemini วิเคราะห์ภาพและสร้างคีย์เวิร์ด"""
     model = genai.GenerativeModel("gemini-pro-vision")
 
-    if image_path is None:
+    if image_file is None:
         raise ValueError("No image file provided.")
 
     # แปลง uploaded file (BytesIO) เป็นภาพ
-    image = Image.open(image_path)
+    image = Image.open(image_file)
 
+    # ส่งรูปไปที่ Gemini โดยใส่เป็น list
     response = model.generate_content(
         ["Can you suggest some keywords to search for similar images for design reference?"],
-        image=image
+        [image]  # ✅ ส่งเป็น list
     )
 
     keywords = response.text.strip().split(", ")
     return keywords
-
+    
 # อัปโหลดไฟล์รูปภาพ
 uploaded_file = st.file_uploader("📤 อัปโหลดรูปภาพที่ต้องการวิเคราะห์", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
-    keywords = generate_keywords_from_image(uploaded_file)  # Pass uploaded_file as argument
-    st.write("Generated Keywords:", keywords)
-
     # ปุ่มวิเคราะห์
     if st.button("🔍 สร้างคีย์เวิร์ด"):
         with st.spinner("AI กำลังวิเคราะห์... ⏳"):
-            keywords = generate_keywords_from_image(image)
+            keywords = generate_keywords_from_image(uploaded_file)
 
         # แสดงคีย์เวิร์ด
         st.subheader("🔑 คีย์เวิร์ดที่ได้:")
