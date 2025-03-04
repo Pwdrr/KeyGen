@@ -18,7 +18,7 @@ if not GENAI_API_KEY:
     raise ValueError("GENAI_API_KEY is not set in Streamlit secrets.")
 
 # ตั้งค่า Gemini AI API
-client = genai.Client(api_key=GENAI_API_KEY)
+genai.configure(api_key=GENAI_API_KEY)
 
 def generate_keywords_from_image(image_file):
     """ใช้ Gemini วิเคราะห์ภาพและสร้างคีย์เวิร์ด"""
@@ -28,13 +28,13 @@ def generate_keywords_from_image(image_file):
     # แปลง uploaded file (BytesIO) เป็น PIL image
     image = Image.open(image_file)
 
-    # ✅ ใช้ API ใหม่ของ Gemini
-    response = client.models.generate_content(
-        model="gemini-2.0-flash",  # ✅ ระบุชื่อโมเดลที่ต้องการ
-        contents=[image, "Can you suggest some keywords to search for similar images for design reference?"]
+    # ✅ ใช้โมเดล gemini-pro-vision ที่รองรับภาพ
+    model = genai.GenerativeModel("gemini-pro-vision")
+    response = model.generate_content(
+        [image, "Can you suggest some keywords to search for similar images for design reference?"]
     )
 
-    # ตรวจสอบว่ามี response.text หรือไม่
+    # ตรวจสอบ response และดึงคีย์เวิร์ด
     if response and hasattr(response, 'text'):
         keywords = response.text.strip().split(", ")
     else:
