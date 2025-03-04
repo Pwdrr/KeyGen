@@ -2,7 +2,6 @@ import google.generativeai as genai
 import streamlit as st
 from PIL import Image
 import io
-from google.generativeai.types import Part
 
 # ตั้งค่าหน้า UI
 st.set_page_config(page_title="AI Image Keyword Generator", layout="centered")
@@ -19,28 +18,24 @@ if not GENAI_API_KEY:
     raise ValueError("GENAI_API_KEY is not set in Streamlit secrets.")
 
 # ตั้งค่า Gemini AI API
-genai.configure(api_key=GENAI_API_KEY)
+client = genai.Client(api_key=GENAI_API_KEY)
 
 def generate_keywords_from_image(image_file):
     """ใช้ Gemini วิเคราะห์ภาพและสร้างคีย์เวิร์ด"""
-    model = genai.GenerativeModel("gemini-pro-vision")
-
     if image_file is None:
-        raise ValueError("No image file provided.")
+        raise ValueError("❌ No image file provided.")
 
-    # แปลง uploaded file (BytesIO) เป็นภาพ
+    # แปลง uploaded file (BytesIO) เป็น PIL image
     image = Image.open(image_file)
 
-    # แปลงเป็น Part เพื่อส่งเข้า Gemini
-    image_part = Part.from_image(image)
-
-    response = model.generate_content(
-        ["Can you suggest some keywords to search for similar images for design reference?"],
-        image_part  # ✅ ส่งเป็น Part object
+    # ✅ ใช้ API ใหม่ของ Gemini
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",  # ✅ ระบุชื่อโมเดลที่ต้องการ
+        contents=[image, "Can you suggest some keywords to search for similar images for design reference?"]
     )
 
     # ตรวจสอบว่ามี response.text หรือไม่
-    if response and response.text:
+    if response and hasattr(response, 'text'):
         keywords = response.text.strip().split(", ")
     else:
         keywords = ["No keywords generated."]
