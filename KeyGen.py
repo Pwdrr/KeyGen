@@ -29,7 +29,7 @@ def generate_keywords_from_image(image_file):
     image = Image.open(image_file)
 
     # ✅ ใช้โมเดล gemini-pro-vision ที่รองรับภาพ
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-2.5-Pro")
     response = model.generate_content(
         [image, "Can you suggest some keywords to search for similar images for design reference?"]
     )
